@@ -20,6 +20,7 @@ function createDOMEvent() {
     };
 }
 
+
 const button = createDOMEvent();
 
 button.addEventListener("save", () => {
