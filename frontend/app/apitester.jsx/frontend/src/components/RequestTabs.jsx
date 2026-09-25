@@ -1,95 +1,77 @@
 import { useState } from "react";
 
-function RequestTabs() {
+export default function RequestTabs({ headers, setHeaders, body, setBody }) {
+  const [activeTab, setActiveTab] = useState("headers");
 
-  const [activeTab, setActiveTab] = useState("Params");
+  // Add a new empty header row
+  const addHeader = () => {
+    setHeaders([...headers, { key: "", value: "" }]);
+  };
 
-  const tabs = [
-    "Params",
-    "Authorization",
-    "Headers",
-    "Body"
-  ];
+  // Update specific key or value in the headers array
+  const updateHeader = (index, field, value) => {
+    const updated = [...headers];
+    updated[index][field] = value;
+    setHeaders(updated);
+  };
+
+  // Remove a header row
+  const removeHeader = (index) => {
+    setHeaders(headers.filter((_, i) => i !== index));
+  };
 
   return (
-    <div className="request-section">
-
-      <div className="tabs">
-
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            className={activeTab === tab ? "tab active-tab" : "tab"}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-
+    <div className="request-tabs" style={{ marginBottom: "20px" }}>
+      {/* Tab Switcher */}
+      <div style={{ display: "flex", gap: "10px", borderBottom: "1px solid #ccc", marginBottom: "10px" }}>
+        <button 
+          onClick={() => setActiveTab("headers")} 
+          style={{ fontWeight: activeTab === "headers" ? "bold" : "normal" }}
+        >
+          Headers ({headers.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab("body")} 
+          style={{ fontWeight: activeTab === "body" ? "bold" : "normal" }}
+        >
+          Body
+        </button>
       </div>
 
-      <div className="tab-content">
-
-        {activeTab === "Params" && (
-          <div>
-            <div className="input-row">
-              <input type="checkbox" />
+      {/* Headers Tab Content */}
+      {activeTab === "headers" && (
+        <div>
+          {headers.map((header, index) => (
+            <div key={index} style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
               <input
-                placeholder="Parameter name"
-                className="small-input"
+                placeholder="Key (e.g. Authorization)"
+                value={header.key}
+                onChange={(e) => updateHeader(index, "key", e.target.value)}
               />
               <input
-                placeholder="Value"
-                className="small-input"
+                placeholder="Value (e.g. Bearer token...)"
+                value={header.value}
+                onChange={(e) => updateHeader(index, "value", e.target.value)}
               />
+              <button onClick={() => removeHeader(index)}>X</button>
             </div>
+          ))}
+          <button onClick={addHeader}>+ Add Header</button>
+        </div>
+      )}
 
-            <button className="add-button">
-              + Add parameter
-            </button>
-          </div>
-        )}
-
-        {activeTab === "Authorization" && (
-          <div className="empty-tab">
-            Authorization settings
-          </div>
-        )}
-
-        {activeTab === "Headers" && (
-          <div>
-            <div className="input-row">
-              <input type="checkbox" />
-              <input
-                placeholder="Header name"
-                className="small-input"
-              />
-              <input
-                placeholder="Header value"
-                className="small-input"
-              />
-            </div>
-
-            <button className="add-button">
-              + Add header
-            </button>
-          </div>
-        )}
-
-        {activeTab === "Body" && (
+      {/* Body Tab Content */}
+      {activeTab === "body" && (
+        <div>
           <textarea
-            className="body-editor"
-            placeholder={`{
-  "name": "Aarushi",
-  "email": "example@gmail.com"
-}`}
+            rows="6"
+            placeholder='{\n  "title": "foo",\n  "body": "bar"\n}'
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            style={{ width: "100%", fontFamily: "monospace", padding: "8px" }}
           />
-        )}
-
-      </div>
-
+        </div>
+      )}
     </div>
   );
 }
-
-export default RequestTabs;

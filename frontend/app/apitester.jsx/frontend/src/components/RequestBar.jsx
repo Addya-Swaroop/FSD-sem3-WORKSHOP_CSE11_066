@@ -1,19 +1,8 @@
-function RequestBar({
-  method,
-  setMethod,
-  url,
-  setUrl,
-  sendRequest
-}) {
-
+// components/RequestBar.jsx
+export default function RequestBar({ method, setMethod, url, setUrl, sendRequest, loading }) {
   return (
-    <div className="request-container">
-
-      <select
-        value={method}
-        onChange={(e) => setMethod(e.target.value)}
-        className={`method ${method.toLowerCase()}`}
-      >
+    <div className="request-bar">
+      <select value={method} onChange={(e) => setMethod(e.target.value)}>
         <option value="GET">GET</option>
         <option value="POST">POST</option>
         <option value="PUT">PUT</option>
@@ -24,20 +13,13 @@ function RequestBar({
       <input
         type="text"
         value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        className="url-input"
-        placeholder="Enter request URL"
+        onChange={(e) => setUrl(e.target.value)} // <--- Check this line
+        placeholder="https://dummyjson.com/products/1"
       />
 
-      <button
-        className="send-button"
-        onClick={sendRequest}
-      >
-        Send
+      <button onClick={sendRequest} disabled={loading}>
+        {loading ? "Sending..." : "Send"}
       </button>
-
     </div>
   );
 }
-
-export default RequestBar;

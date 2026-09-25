@@ -1,57 +1,34 @@
-function Sidebar() {
+export default function Sidebar({ activeTab, setActiveTab }) {
   return (
     <aside className="sidebar">
+      <h2>⚡ API Tester</h2>
 
-      <div className="logo">
-        <div className="logo-icon">⚡</div>
-        <span>API Tester</span>
-      </div>
-
-      <div className="menu-title">
-        WORKSPACE
-      </div>
-
-      <div className="menu-item active">
-        <span>▣</span>
-        API Tester
-      </div>
-
-      <div className="menu-item">
-        <span>▤</span>
-        Collections
-      </div>
-
-      <div className="menu-item">
-        <span>🕘</span>
-        History
-      </div>
-
-      <div className="menu-item">
-        <span>⚙</span>
-        Environments
-      </div>
-
-      <div className="menu-title history-title">
-        RECENT
-      </div>
-
-      <div className="recent-request">
-        <span className="get">GET</span>
-        /users
-      </div>
-
-      <div className="recent-request">
-        <span className="post">POST</span>
-        /users
-      </div>
-
-      <div className="recent-request">
-        <span className="delete">DELETE</span>
-        /users/1
-      </div>
-
+      <nav>
+        <button 
+          className={`nav-item ${activeTab === "tester" ? "active" : ""}`}
+          onClick={() => setActiveTab("tester")}
+        >
+          📋 API Tester
+        </button>
+        <button 
+          className={`nav-item ${activeTab === "collections" ? "active" : ""}`}
+          onClick={() => setActiveTab("collections")}
+        >
+          📁 Collections
+        </button>
+        <button 
+          className={`nav-item ${activeTab === "history" ? "active" : ""}`}
+          onClick={() => setActiveTab("history")}
+        >
+          🕒 History
+        </button>
+        <button 
+          className={`nav-item ${activeTab === "environments" ? "active" : ""}`}
+          onClick={() => setActiveTab("environments")}
+        >
+          ⚙️ Environments
+        </button>
+      </nav>
     </aside>
   );
 }
-
-export default Sidebar;
