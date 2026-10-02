@@ -1,58 +1,28 @@
-import { useState } from "react";
-import "./App.css";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      setMessage(data.message);
-    } catch (error) {
-      setMessage("Server error");
-    }
-  };
+  const isLoggedIn = localStorage.getItem("loggedIn");
 
   return (
-    <div className="login-container">
-      <form className="login-box" onSubmit={handleLogin}>
-        <h1>Login</h1>
-
-        <input
-          type="email"
-          placeholder="Enter email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? <Navigate to="/dashboard" /> : <Login />
+          }
         />
 
-        <input
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+        <Route
+          path="/dashboard"
+          element={
+            isLoggedIn ? <Dashboard /> : <Navigate to="/" />
+          }
         />
-
-        <button type="submit">Login</button>
-
-        <p>{message}</p>
-      </form>
-    </div>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
