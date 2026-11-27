@@ -1,141 +1,63 @@
-const express = require("express");
-const cors = require("cors");
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-// Demo login
-const user = {
-  email: "admin@gmail.com",
-  password: "1234",
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI)
+.then(() => {
+    console.log("MongoDB Connected Successfully!");
+
+    app.listen(process.env.PORT || 3000, () => {
+        console.log("Server running on port 3000");
+    });
+})
+.catch((error) => {
+    console.log("MongoDB Connection Failed:", error.message);
+});
+pp.get("/", (req, res) => {
+  try {
+    res.status(200).json({ msg: "Welcome to Express Server" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", details: error.message });
+  }
+});
+app.post("/test", async (req, res) )=> {
+  try{
+    const student = await Student.create({
+      name:"Rahul Sharma",
+      email:"rahul@gmail.com",
+      course:"MERN stack"
+    });
+    res.status(201).json({
+      message: "Student created successfully",
+      data:student,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+app.get("/test-db", async (req, res)) => {
+  try{
+    const students = await Student.find();
+    res.status(200).json({
+      message: "Students retrieved successfully",
+      data:students,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
-// Student data
-let students = [
-  {
-    id: 1,
-    name: "Rahul Sharma",
-    email: "rahul@gmail.com",
-    course: "B.Tech CSE",
-    year: "2nd Year",
-  },
-  {
-    id: 2,
-    name: "Priya Singh",
-    email: "priya@gmail.com",
-    course: "B.Tech CSE",
-    year: "2nd Year",
-  },
-  {
-    id: 3,
-    name: "Arjun Verma",
-    email: "arjun@gmail.com",
-    course: "B.Tech IT",
-    year: "1st Year",
-  },
-];
-
-// LOGIN
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-
-  if (email === user.email && password === user.password) {
-    res.json({
-      success: true,
-      message: "Login successful",
-    });
-  } else {
-    res.status(401).json({
-      success: false,
-      message: "Invalid email or password",
-    });
-  }
-});
-
-// GET ALL STUDENTS
-app.get("/students", (req, res) => {
-  res.json(students);
-});
-
-// ADD STUDENT
-app.post("/students", (req, res) => {
-  const { name, email, course, year } = req.body;
-
-  if (!name || !email || !course || !year) {
-    return res.status(400).json({
-      message: "All fields are required",
-    });
-  }
-
-  const newStudent = {
-    id: students.length > 0 ? students[students.length - 1].id + 1 : 1,
-    name,
-    email,
-    course,
-    year,
-  };
-
-  students.push(newStudent);
-
-  res.status(201).json({
-    message: "Student added successfully",
-    student: newStudent,
-  });
-});
-
-// UPDATE STUDENT
-app.put("/students/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const studentIndex = students.findIndex(
-    (student) => student.id === id
-  );
-
-  if (studentIndex === -1) {
-    return res.status(404).json({
-      message: "Student not found",
-    });
-  }
-
-  const { name, email, course, year } = req.body;
-
-  students[studentIndex] = {
-    id,
-    name,
-    email,
-    course,
-    year,
-  };
-
-  res.json({
-    message: "Student updated successfully",
-    student: students[studentIndex],
-  });
-});
-
-// DELETE STUDENT
-app.delete("/students/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const studentExists = students.some(
-    (student) => student.id === id
-  );
-
-  if (!studentExists) {
-    return res.status(404).json({
-      message: "Student not found",
-    });
-  }
-
-  students = students.filter((student) => student.id !== id);
-
-  res.json({
-    message: "Student deleted successfully",
-  });
-});
-
-app.listen(5000, () => {
-  console.log("Backend server running on http://localhost:5000");
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
